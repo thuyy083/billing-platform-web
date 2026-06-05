@@ -1,0 +1,54 @@
+.wrapper {
+  padding: 24px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    color: #ee0033;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 8px;
+    color: #666;
+  }
+}
+
+.tableSection {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+.tableToolbar {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-bottom: 16px;
+
+  position: relative;
+}
+
+.columnBtn {
+
+  background: white;
+
+  border: 1px solid #ddd;
+
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
