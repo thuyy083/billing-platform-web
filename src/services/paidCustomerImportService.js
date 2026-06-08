@@ -3,7 +3,8 @@ import axiosClient from "../config/axios";
 const paidCustomerImportService = {
 
   importReconciliation(
-    periodId,
+    month,
+    year,
     file
   ) {
 
@@ -16,7 +17,7 @@ const paidCustomerImportService = {
     );
 
     return axiosClient.post(
-      `/records/import-reconciliation?periodId=${periodId}`,
+      `/records/import-reconciliation?month=${month}&year=${year}`,
       formData,
       {
         headers: {

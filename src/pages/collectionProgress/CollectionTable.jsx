@@ -4,6 +4,7 @@ import {
 
 import styles from "./CollectionTable.module.scss";
 import { markDebtRecord, printBillRecord } from "../../redux/slices/collectionProgressSlice";
+import { toast } from "react-toastify";
 
 const formatMoney = (value) => {
 
@@ -346,6 +347,12 @@ const CollectionTable = ({
                               item.amountDue
                           })
                         )
+                          .unwrap()
+                          .catch((error) => {
+
+                            toast.error(error);
+
+                          })
                       }
                     >
                       <span className={styles.knob}></span>
@@ -365,6 +372,12 @@ const CollectionTable = ({
                         dispatch(
                           markDebtRecord(item.id)
                         )
+                          .unwrap()
+                          .catch((error) => {
+
+                            toast.error(error);
+
+                          })
                       }
                     >
                       <span className={styles.knob}></span>

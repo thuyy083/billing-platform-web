@@ -83,3 +83,18 @@ button {
     width: 100%;
   }
 }
+
+
+.periodGroup {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.monthSelect {
+  width: 135px;
+  min-width: 135px;
+}
+.yearSelect {
+  width: 135px;
+  min-width: 135px;
+}

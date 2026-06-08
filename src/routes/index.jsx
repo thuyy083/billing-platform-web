@@ -11,18 +11,31 @@ import PaidCustomerImport from "../pages/paidCustomerImport/PaidCustomerImport";
 import CollectionProgress from "../pages/collectionProgress/CollectionProgress";
 import ConsultantManagement from "../pages/consultant/ConsultantManagement";
 import StoreConfig from "../pages/storeConfig/StoreConfig";
+import ProtectedRoute from "./ProtectedRoute";
 
 const getNormalizedRole = (user) => {
-  const directRole = user?.role || user?.roleName;
-  if (typeof directRole === "string" && directRole.trim()) {
+
+  const directRole =
+    user?.role || user?.roleName;
+
+  if (
+    typeof directRole === "string" &&
+    directRole.trim()
+  ) {
     return directRole.trim().toUpperCase();
   }
 
   const firstRole = user?.roles?.[0];
-  if (typeof firstRole === "string" && firstRole.trim()) {
+
+  if (
+    typeof firstRole === "string"
+  ) {
     return firstRole.trim().toUpperCase();
   }
-  if (firstRole?.name && typeof firstRole.name === "string") {
+
+  if (
+    firstRole?.name
+  ) {
     return firstRole.name.trim().toUpperCase();
   }
 
@@ -49,7 +62,9 @@ function AppRoutes() {
 
         <Route
           element={
+            <ProtectedRoute>
             <MainLayout />
+            </ProtectedRoute>
           }
         >
           <Route path="/" element={<HomeByRole />} />

@@ -95,3 +95,12 @@
 
   cursor: pointer;
 }
+
+.dragging {
+  border-color: #e60012;
+  background: #fff5f5;
+
+  transform: scale(1.01);
+
+  transition: all .2s ease;
+}

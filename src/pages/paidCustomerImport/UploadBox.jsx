@@ -1,9 +1,10 @@
 import {
-  useState
+  useState, useEffect
 } from "react";
 
+
 import styles
-from "./UploadBox.module.scss";
+  from "./UploadBox.module.scss";
 
 import {
   useSelector
@@ -25,13 +26,54 @@ const UploadBox = () => {
     setLoading] =
     useState(false);
 
+  const [dragging, setDragging] =
+    useState(false);
+
+  useEffect(() => {
+
+    const preventDefault = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    window.addEventListener(
+      "dragover",
+      preventDefault
+    );
+
+    window.addEventListener(
+      "drop",
+      preventDefault
+    );
+
+    return () => {
+
+      window.removeEventListener(
+        "dragover",
+        preventDefault
+      );
+
+      window.removeEventListener(
+        "drop",
+        preventDefault
+      );
+
+    };
+
+  }, []);
+
   const {
-    selectedPeriodId
-  } =
-  useSelector(
-    state =>
-      state.paidCustomerImport
-  );
+
+    selectedMonth,
+    selectedYear
+
+  }
+    =
+    useSelector(
+      state =>
+        state
+          .paidCustomerImport
+    );
 
   const handleFile =
     file => {
@@ -45,7 +87,7 @@ const UploadBox = () => {
           .toLowerCase();
 
       if (
-        !["xlsx","xls"]
+        !["xlsx", "xls"]
           .includes(extension)
       ) {
 
@@ -60,95 +102,137 @@ const UploadBox = () => {
 
     };
 
-  const handleImport =
-  async () => {
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
-    if (!selectedPeriodId) {
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      toast.warning(
-        "Vui lòng chọn kỳ cước"
-      );
+    setDragging(true);
+  };
 
-      return;
-    }
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-    if (!selectedFile) {
+    setDragging(false);
+  };
 
-      toast.warning(
-        "Vui lòng chọn file"
-      );
+  const handleDrop = (e) => {
 
-      return;
-    }
+    e.preventDefault();
+    e.stopPropagation();
 
-    try {
+    setDragging(false);
 
-      setLoading(true);
+    const file =
+      e.dataTransfer.files?.[0];
 
-      await paidCustomerImportService
-        .importReconciliation(
-          selectedPeriodId,
-          selectedFile
-        );
+    if (!file) return;
 
-      toast.success(
-        "Import thành công"
-      );
-
-      setSelectedFile(null);
-
-    } catch (error) {
-
-      toast.error(
-        error?.response?.data?.message ||
-        "Import thất bại"
-      );
-
-    } finally {
-
-      setLoading(false);
-
-    }
+    handleFile(file);
 
   };
+
+  const handleImport =
+    async () => {
+
+      if (
+        !selectedMonth ||
+        !selectedYear
+      ) {
+
+        toast.warning(
+          "Vui lòng chọn tháng năm"
+        );
+
+        return;
+
+      }
+
+      if (!selectedFile) {
+
+        toast.warning(
+          "Vui lòng chọn file"
+        );
+
+        return;
+      }
+
+      try {
+
+        setLoading(true);
+
+        await paidCustomerImportService
+          .importReconciliation(
+
+            selectedMonth,
+            selectedYear,
+            selectedFile
+
+          );
+
+        toast.success(
+          "Import thành công"
+        );
+
+        setSelectedFile(null);
+
+      } catch (error) {
+
+        toast.error(
+          error?.response?.data?.message ||
+          "Import thất bại"
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
 
   const handleDownload =
-  async () => {
+    async () => {
 
-    try {
+      try {
 
-      const response =
-        await paidCustomerImportService
-          .downloadTemplate();
+        const response =
+          await paidCustomerImportService
+            .downloadTemplate();
 
-      const url =
-        window.URL.createObjectURL(
-          new Blob([
-            response.data
-          ])
+        const url =
+          window.URL.createObjectURL(
+            new Blob([
+              response.data
+            ])
+          );
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+        link.href = url;
+
+        link.download =
+          "mau_import.xlsx";
+
+        link.click();
+
+      } catch {
+
+        toast.error(
+          "Không tải được file mẫu"
         );
 
-      const link =
-        document.createElement(
-          "a"
-        );
+      }
 
-      link.href = url;
-
-      link.download =
-        "mau_import.xlsx";
-
-      link.click();
-
-    } catch {
-
-      toast.error(
-        "Không tải được file mẫu"
-      );
-
-    }
-
-  };
+    };
 
   return (
 
@@ -169,9 +253,13 @@ const UploadBox = () => {
       </div>
 
       <div
-        className={
-          styles.uploadBox
-        }
+        className={`${styles.uploadBox}
+  ${dragging ? styles.dragging : ""}`}
+
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
       >
 
         <div>

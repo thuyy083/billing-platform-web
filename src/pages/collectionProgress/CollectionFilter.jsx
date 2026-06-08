@@ -7,7 +7,7 @@ import styles from "./CollectionFilter.module.scss";
 
 
 import { fetchCollectionProgress, resetFilter, setPage, updateFilter } from "../../redux/slices/collectionProgressSlice";
-import { selectBillingPeriods, selectConsultants, selectFilters } from "../../redux/selector/collectionProgressSelector";
+import { selectConsultants, selectFilters } from "../../redux/selector/collectionProgressSelector";
 
 const CollectionFilter = () => {
 
@@ -17,11 +17,6 @@ const CollectionFilter = () => {
   const consultants =
     useSelector(
       selectConsultants
-    );
-
-  const periods =
-    useSelector(
-      selectBillingPeriods
     );
 
   const filters =
@@ -37,6 +32,9 @@ const CollectionFilter = () => {
       fetchCollectionProgress()
     );
   };
+
+  const currentYear =
+    new Date().getFullYear();
 
   const handleReset = () => {
 
@@ -57,140 +55,189 @@ const CollectionFilter = () => {
 
     <div className={styles.container}>
 
-  {/* Hàng bộ lọc */}
-  <div className={styles.filterRow}>
+      {/* Hàng bộ lọc */}
+      <div className={styles.filterRow}>
 
-    <select
-      value={filters.periodId}
-      onChange={(e) =>
-        dispatch(
-          updateFilter({
-            periodId: e.target.value
-          })
-        )
-      }
-    >
-      <option value="">
-        Tất cả kỳ cước
-      </option>
+        <div className={styles.periodGroup}>
 
-      {periods.map((period) => (
-        <option
-          key={period.id}
-          value={period.id}
+          {/* Tháng */}
+
+          <select
+            value={filters.month}
+            className={styles.monthSelect}
+            onChange={(e) =>
+              dispatch(
+                updateFilter({
+                  month: Number(e.target.value)
+                })
+              )
+            }
+          >
+            {
+              Array.from(
+                { length: 12 },
+                (_, i) => (
+                  <option
+                    key={i + 1}
+                    value={i + 1}
+                  >
+                    Tháng {i + 1}
+                  </option>
+                )
+              )
+            }
+          </select>
+
+          {/* Năm */}
+
+          <select
+            value={filters.year}
+            className={styles.yearSelect}
+            onChange={(e) =>
+              dispatch(
+                updateFilter({
+                  year: Number(e.target.value)
+                })
+              )
+            }
+          >
+            {
+              Array.from(
+                {
+                  length:
+                    currentYear -
+                    2024 +
+                    2
+                },
+                (_, i) => {
+
+                  const year =
+                    2024 + i;
+
+                  return (
+                    <option
+                      key={year}
+                      value={year}
+                    >
+                      {year}
+                    </option>
+                  );
+                }
+              )
+            }
+          </select>
+
+
+        </div>
+
+        <select
+          value={filters.assignedUserId}
+          onChange={(e) =>
+            dispatch(
+              updateFilter({
+                assignedUserId:
+                  e.target.value
+              })
+            )
+          }
         >
-          {period.name}
-        </option>
-      ))}
-    </select>
+          <option value="">
+            Tất cả nhân viên
+          </option>
 
-    <select
-      value={filters.assignedUserId}
-      onChange={(e) =>
-        dispatch(
-          updateFilter({
-            assignedUserId:
-              e.target.value
-          })
-        )
-      }
-    >
-      <option value="">
-        Tất cả nhân viên
-      </option>
+          {consultants.map((item) => (
+            <option
+              key={item.id}
+              value={item.id}
+            >
+              {item.fullName}
+            </option>
+          ))}
+        </select>
 
-      {consultants.map((item) => (
-        <option
-          key={item.id}
-          value={item.id}
+        <select
+          value={filters.collectionStatus}
+          onChange={(e) =>
+            dispatch(
+              updateFilter({
+                collectionStatus:
+                  e.target.value
+              })
+            )
+          }
         >
-          {item.fullName}
-        </option>
-      ))}
-    </select>
+          <option value="">
+            Tất cả trạng thái thu
+          </option>
 
-    <select
-      value={filters.collectionStatus}
-      onChange={(e) =>
-        dispatch(
-          updateFilter({
-            collectionStatus:
-              e.target.value
-          })
-        )
-      }
-    >
-      <option value="">
-        Tất cả trạng thái thu
-      </option>
+          <option value="CHUA_THU">
+            Chưa thu
+          </option>
 
-      <option value="CHUA_THU">
-        Chưa thu
-      </option>
+          <option value="DA_THANH_TOAN">
+            Đã thanh toán
+          </option>
+        </select>
 
-      <option value="DA_THANH_TOAN">
-        Đã thanh toán
-      </option>
-    </select>
+        <select
+          value={filters.debtStatus}
+          onChange={(e) =>
+            dispatch(
+              updateFilter({
+                debtStatus:
+                  e.target.value
+              })
+            )
+          }
+        >
+          <option value="">
+            Tất cả trạng thái gạch nợ
+          </option>
 
-    <select
-      value={filters.debtStatus}
-      onChange={(e) =>
-        dispatch(
-          updateFilter({
-            debtStatus:
-              e.target.value
-          })
-        )
-      }
-    >
-      <option value="">
-        Tất cả trạng thái gạch nợ
-      </option>
+          <option value="CHUA_GACH_NO">
+            Chưa gạch nợ
+          </option>
 
-      <option value="CHUA_GACH_NO">
-        Chưa gạch nợ
-      </option>
+          <option value="DA_GACH_NO">
+            Đã gạch nợ
+          </option>
+        </select>
 
-      <option value="DA_GACH_NO">
-        Đã gạch nợ
-      </option>
-    </select>
+      </div>
 
-  </div>
+      {/* Hàng tìm kiếm */}
+      <div className={styles.searchRow}>
 
-  {/* Hàng tìm kiếm */}
-  <div className={styles.searchRow}>
+        <input
+          placeholder="Tìm mã KH, tên KH, số TB, SĐT, địa chỉ..."
+          value={filters.search}
+          onChange={(e) =>
+            dispatch(
+              updateFilter({
+                search: e.target.value
+              })
+            )
+          }
+        />
 
-    <input
-      placeholder="Tìm mã KH, tên KH, số TB, SĐT..."
-      value={filters.search}
-      onChange={(e) =>
-        dispatch(
-          updateFilter({
-            search: e.target.value
-          })
-        )
-      }
-    />
+        <button
+          className={styles.searchBtn}
+          onClick={handleSearch}
+        >
+          Tìm kiếm
+        </button>
 
-    <button
-      className={styles.searchBtn}
-      onClick={handleSearch}
-    >
-      Tìm kiếm
-    </button>
+        <button
+          className={styles.resetBtn}
+          onClick={handleReset}
+        >
+          Làm mới
+        </button>
 
-    <button
-      className={styles.resetBtn}
-      onClick={handleReset}
-    >
-      Làm mới
-    </button>
 
-  </div>
+      </div>
 
-</div>
+    </div>
   );
 };
 

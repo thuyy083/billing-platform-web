@@ -6,14 +6,15 @@ import {
 import {
   getCollectionProgress,
   markDebt,
-  printBill
+  printBill,
+  exportCollectionProgress,
+  bulkMarkDebt
 } from "../../services/collectionProgressService";
 
 import consultantService
-from "../../services/consultantService";
+  from "../../services/consultantService";
+import { toast } from "react-toastify";
 
-import billingPeriodsService
-from "../../services/billingPeriodsService";
 
 export const fetchCollectionProgress =
   createAsyncThunk(
@@ -49,23 +50,7 @@ export const fetchConsultants =
     }
   );
 
-export const fetchBillingPeriods =
-  createAsyncThunk(
-    "collectionProgress/fetchBillingPeriods",
-
-    async () => {
-
-      const response =
-        await billingPeriodsService.getList({
-          page: 0,
-          size: 100
-        });
-
-      return response.data.data;
-    }
-  );
-
-  export const printBillRecord =
+export const printBillRecord =
   createAsyncThunk(
 
     "collectionProgress/printBill",
@@ -78,14 +63,32 @@ export const fetchBillingPeriods =
       thunkAPI
     ) => {
 
-      await printBill(
-        recordId,
-        collectedAmount
-      );
+      try {
 
-      thunkAPI.dispatch(
-        fetchCollectionProgress()
-      );
+        await printBill(
+          recordId,
+          collectedAmount
+        );
+
+        toast.success(
+          "Thanh toán thành công"
+        );
+
+        return {
+          recordId,
+          collectedAmount
+        };
+
+      } catch (error) {
+
+        const message =
+          error.response?.data?.message ||
+          "Thanh toán thất bại";
+
+        return thunkAPI.rejectWithValue(
+          message
+        );
+      }
     }
   );
 export const markDebtRecord =
@@ -98,11 +101,127 @@ export const markDebtRecord =
       thunkAPI
     ) => {
 
-      await markDebt(recordId);
+      try {
 
-      thunkAPI.dispatch(
-        fetchCollectionProgress()
-      );
+        await markDebt(recordId);
+
+        toast.success(
+          "Gạch nợ thành công"
+        );
+
+        return recordId;
+
+      } catch (error) {
+
+        const message =
+          error.response?.data?.message ||
+          "Gạch nợ thất bại";
+
+        return thunkAPI.rejectWithValue(
+          message
+        );
+      }
+    }
+  );
+
+export const exportExcel =
+  createAsyncThunk(
+
+    "collectionProgress/export",
+
+    async (_, thunkAPI) => {
+
+      const state =
+        thunkAPI.getState()
+          .collectionProgress;
+
+      const blob =
+        await exportCollectionProgress({
+
+          month:
+            state.filters.month,
+
+          year:
+            state.filters.year,
+
+          assignedUserId:
+            state.filters.assignedUserId,
+
+          collectionStatus:
+            state.filters.collectionStatus,
+
+          debtStatus:
+            state.filters.debtStatus
+        });
+
+      const url =
+        window.URL.createObjectURL(
+          blob
+        );
+
+      const a =
+        document.createElement(
+          "a"
+        );
+
+      a.href = url;
+
+      a.download =
+        `TienDoThuCuoc_${state.filters.month}_${state.filters.year}.xlsx`;
+
+      a.click();
+
+      window.URL
+        .revokeObjectURL(
+          url
+        );
+    }
+  );
+
+  export const bulkMarkDebtByFilter =
+  createAsyncThunk(
+
+    "collectionProgress/bulkMarkDebt",
+
+    async (_, thunkAPI) => {
+
+      try {
+
+        const state =
+          thunkAPI.getState()
+            .collectionProgress;
+
+        await bulkMarkDebt({
+
+          month:
+            state.filters.month,
+
+          year:
+            state.filters.year,
+
+          assignedUserId:
+            state.filters.assignedUserId || undefined
+        });
+
+        toast.success(
+          "Gạch nợ tất cả thành công"
+        );
+
+        thunkAPI.dispatch(
+          fetchCollectionProgress()
+        );
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message ||
+          "Gạch nợ thất bại"
+        );
+
+        return thunkAPI.rejectWithValue(
+          error.response?.data?.message
+        );
+      }
     }
   );
 
@@ -114,8 +233,6 @@ const initialState = {
 
   consultants: [],
 
-  billingPeriods: [],
-
   page: 0,
 
   size: 20,
@@ -126,7 +243,9 @@ const initialState = {
 
   filters: {
 
-    periodId: "",
+    month: new Date().getMonth() + 1,
+
+    year: new Date().getFullYear(),
 
     search: "",
 
@@ -164,7 +283,11 @@ const collectionProgressSlice =
 
         state.filters = {
 
-          periodId: "",
+          month:
+            new Date().getMonth() + 1,
+
+          year:
+            new Date().getFullYear(),
 
           search: "",
 
@@ -249,14 +372,50 @@ const collectionProgressSlice =
         )
 
         .addCase(
-          fetchBillingPeriods.fulfilled,
+  printBillRecord.fulfilled,
 
-          (state, action) => {
+  (state, action) => {
 
-            state.billingPeriods =
-              action.payload.content;
-          }
-        );
+    const record =
+      state.records.find(
+        x =>
+          x.id ===
+          action.payload.recordId
+      );
+
+    if (record) {
+
+      record.collectionStatus =
+        "DA_THANH_TOAN";
+
+      record.collectedAmount =
+        action.payload.collectedAmount;
+
+      record.collectedAt =
+        new Date().toISOString();
+    }
+  }
+)
+
+.addCase(
+  markDebtRecord.fulfilled,
+
+  (state, action) => {
+
+    const record =
+      state.records.find(
+        x =>
+          x.id ===
+          action.payload
+      );
+
+    if (record) {
+
+      record.debtStatus =
+        "DA_GACH_NO";
+    }
+  }
+);
     }
 
   });
@@ -274,4 +433,4 @@ export const {
 } = collectionProgressSlice.actions;
 
 export default
-collectionProgressSlice.reducer;
+  collectionProgressSlice.reducer;

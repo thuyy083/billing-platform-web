@@ -1,119 +1,64 @@
-import {
-  createSlice,
-  createAsyncThunk
-} from "@reduxjs/toolkit";
-import billingPeriodService from "../../services/billingPeriodsService";
+import { createSlice }
+from "@reduxjs/toolkit";
 
-
-export const fetchBillingPeriods =
-createAsyncThunk(
-  "paidCustomerImport/fetchBillingPeriods",
-
-  async () => {
-
-    const response =
-      await billingPeriodService
-        .getBillingPeriods({
-          page: 0,
-          size: 100
-        });
-
-    return response.data.data.content;
-
-  }
-);
+const now =
+  new Date();
 
 const initialState = {
 
-  periods: [],
+  selectedMonth:
+    now.getMonth() + 1,
 
-  selectedPeriodId: "",
-
-  loadingPeriods: false,
+  selectedYear:
+    now.getFullYear()
 
 };
 
 const paidCustomerImportSlice =
 createSlice({
 
-  name: "paidCustomerImport",
+  name:
+    "paidCustomerImport",
 
   initialState,
 
   reducers: {
 
-    setSelectedPeriodId(
+    setSelectedMonth(
       state,
       action
     ) {
 
-      state.selectedPeriodId =
-        action.payload;
+      state.selectedMonth =
+        Number(
+          action.payload
+        );
+
+    },
+
+    setSelectedYear(
+      state,
+      action
+    ) {
+
+      state.selectedYear =
+        Number(
+          action.payload
+        );
 
     }
-
-  },
-
-  extraReducers: builder => {
-
-    builder
-
-      .addCase(
-        fetchBillingPeriods.pending,
-        state => {
-
-          state.loadingPeriods =
-            true;
-
-        }
-      )
-
-      .addCase(
-        fetchBillingPeriods.fulfilled,
-        (
-          state,
-          action
-        ) => {
-
-          state.loadingPeriods =
-            false;
-
-          state.periods =
-            action.payload;
-
-          const openPeriod =
-            action.payload.find(
-              x =>
-                x.status === "OPEN"
-            );
-
-          if (openPeriod) {
-
-            state.selectedPeriodId =
-              openPeriod.id;
-
-          }
-
-        }
-      )
-
-      .addCase(
-        fetchBillingPeriods.rejected,
-        state => {
-
-          state.loadingPeriods =
-            false;
-
-        }
-      );
 
   }
 
 });
 
 export const {
-  setSelectedPeriodId
-} =
+
+  setSelectedMonth,
+  setSelectedYear
+
+}
+=
 paidCustomerImportSlice.actions;
 
 export default

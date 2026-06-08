@@ -40,15 +40,114 @@
 
 .columnBtn {
 
+  height: 44px;
+
   background: white;
 
   border: 1px solid #ddd;
 
-  padding: 10px 14px;
+  padding: 0 18px;
 
-  border-radius: 8px;
+  border-radius: 10px;
 
   cursor: pointer;
 
   font-weight: 600;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  transition: .2s;
+
+  &:hover {
+
+    border-color: #ee0033;
+
+    color: #ee0033;
+  }
+}
+
+.exportBtn {
+
+  height: 44px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  color: white;
+
+  background: #16a34a;
+
+  transition: .2s;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.exportBtn:hover {
+
+  background: #15803d;
+}
+
+.toolbar {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 16px;
+}
+
+.leftActions {
+
+  display: flex;
+
+  gap: 12px;
+}
+
+.bulkDebtBtn {
+
+  height: 44px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  color: white;
+
+  background: #f59e0b;
+
+  transition: .2s;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  &:hover {
+
+    background: #d97706;
+  }
 }

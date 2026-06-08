@@ -111,6 +111,7 @@ const StoreConfig = () => {
             <label>Tên cửa hàng</label>
 
             <input
+            className={styles.input_custom}
               type="text"
               name="storeName"
               value={form.storeName}
@@ -123,6 +124,7 @@ const StoreConfig = () => {
             <label>Địa chỉ</label>
 
             <input
+            className={styles.input_custom}
               type="text"
               name="address"
               value={form.address}
@@ -135,6 +137,7 @@ const StoreConfig = () => {
             <label>Hotline</label>
 
             <input
+            className={styles.input_custom}
               type="text"
               name="hotline"
               value={form.hotline}

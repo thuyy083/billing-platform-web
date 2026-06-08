@@ -10,7 +10,8 @@ import CollectionTable from "./CollectionTable";
 import CollectionPagination from "./CollectionPagination";
 
 import {
-  fetchBillingPeriods,
+  bulkMarkDebtByFilter,
+  exportExcel,
   fetchCollectionProgress,
   fetchConsultants
 } from "../../redux/slices/collectionProgressSlice";
@@ -68,8 +69,6 @@ const CollectionProgress = () => {
 
     dispatch(fetchConsultants());
 
-    dispatch(fetchBillingPeriods());
-
   }, [dispatch]);
 
   useEffect(() => {
@@ -105,45 +104,71 @@ const CollectionProgress = () => {
 
       <div className={styles.tableSection}>
 
-        <div className={styles.tableToolbar}>
+<div className={styles.toolbar}>
 
-          <button
+  <div className={styles.leftActions}>
 
-            className={
-              styles.columnBtn
-            }
+    <button
+      className={styles.exportBtn}
+      onClick={() =>
+        dispatch(exportExcel())
+      }
+    >
+      Xuất Excel
+    </button>
 
-            onClick={() =>
-              setShowColumns(
-                !showColumns
-              )
-            }
-          >
+    <button
+      className={styles.bulkDebtBtn}
+      onClick={() => {
 
-            ⚙️ Tùy chỉnh cột
+        if (
+          window.confirm(
+            "Gạch nợ tất cả dữ liệu đang lọc?"
+          )
+        ) {
 
-          </button>
+          dispatch(
+            bulkMarkDebtByFilter()
+          );
+        }
+      }}
+    >
+      ✓ Gạch nợ tất cả
+    </button>
 
-          {
+  </div>
 
-            showColumns && (
+  <div className={styles.tableToolbar}>
 
-              <ColumnSelector
+    <button
+      className={styles.columnBtn}
+      onClick={() =>
+        setShowColumns(
+          !showColumns
+        )
+      }
+    >
+      ⚙️ Tùy chỉnh cột
+    </button>
 
-                visibleColumns={
-                  visibleColumns
-                }
+    {
+      showColumns && (
 
-                setVisibleColumns={
-                  setVisibleColumns
-                }
-
-              />
-
-            )
+        <ColumnSelector
+          visibleColumns={
+            visibleColumns
           }
+          setVisibleColumns={
+            setVisibleColumns
+          }
+        />
 
-        </div>
+      )
+    }
+
+  </div>
+
+</div>
 
         <CollectionTable
           records={records}

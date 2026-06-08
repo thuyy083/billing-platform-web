@@ -15,11 +15,24 @@ ChartJS.register(
   Legend
 );
 
-const ProgressChart = ({ percent = 0 }) => {
+const ProgressChart = ({
+  title,
+  percent = 0,
+}) => {
+
+  const displayPercent =
+    Number(percent).toFixed(2);
+
+  const chartPercent =
+    Math.min(Number(percent), 100);
+
   const data = {
     datasets: [
       {
-        data: [percent, 100 - percent],
+        data: [
+          chartPercent,
+          100 - chartPercent,
+        ],
 
         backgroundColor: [
           "#D70018",
@@ -32,6 +45,10 @@ const ProgressChart = ({ percent = 0 }) => {
   };
 
   const options = {
+    responsive: true,
+
+    maintainAspectRatio: false,
+
     cutout: "75%",
 
     plugins: {
@@ -43,7 +60,7 @@ const ProgressChart = ({ percent = 0 }) => {
 
   return (
     <div className={styles.card}>
-      <h3>Tỷ lệ hoàn thành</h3>
+      <h3>{title}</h3>
 
       <div className={styles.chartWrapper}>
         <Doughnut
@@ -52,7 +69,7 @@ const ProgressChart = ({ percent = 0 }) => {
         />
 
         <div className={styles.center}>
-          {percent}%
+          {displayPercent}%
         </div>
       </div>
     </div>

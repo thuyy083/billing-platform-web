@@ -1,28 +1,11 @@
-import {useEffect} from "react";
-
-import { useDispatch} from "react-redux";
 
 import styles  from "./PaidCustomerImport.module.scss";
 
-import { fetchBillingPeriods} from "../../redux/slices/paidCustomerImportSlice";
-
-import PeriodSelector from "./PeriodSelector";
-
 import UploadBox from "./UploadBox";
+import MonthYearSelector from "./MonthYearSelector";
 
 const PaidCustomerImport =
   () => {
-
-    const dispatch =
-      useDispatch();
-
-    useEffect(() => {
-
-      dispatch(
-        fetchBillingPeriods()
-      );
-
-    }, []);
 
     return (
 
@@ -45,7 +28,7 @@ const PaidCustomerImport =
 
         </div>
 
-        <PeriodSelector />
+        <MonthYearSelector />
 
         <UploadBox />
 

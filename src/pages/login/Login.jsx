@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login, getMe } from "../../redux/slices/authSlice";
+import { login, getMe, logout } from "../../redux/slices/authSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -38,20 +38,82 @@ function Login() {
     }
 
     try {
+
+      // Bước 1: Login trước
       await dispatch(login(form)).unwrap();
 
-      await dispatch(getMe());
+      // Bước 2: Lấy thông tin user
+await dispatch(login(form)).unwrap();
+
+const user =
+  await dispatch(getMe()).unwrap();
+
+const role = (
+  user?.role ||
+  user?.roleName ||
+  user?.roles?.[0]?.name ||
+  ""
+).toUpperCase();
+
+// CONSULTANT
+if (role === "CONSULTANT") {
+
+  dispatch(logout());
+
+  localStorage.removeItem("user");
+
+  toast.warning(
+    "Tài khoản CONSULTANT chỉ được phép đăng nhập trên ứng dụng Mobile."
+  );
+
+  return;
+}
+
+// Không phải MANAGER
+if (role !== "MANAGER") {
+
+  dispatch(logout());
+
+  localStorage.removeItem("user");
+
+  toast.error(
+    "Bạn không có quyền truy cập hệ thống web."
+  );
+
+  return;
+}
+
+toast.success("Đăng nhập thành công");
+
+setTimeout(() => {
+  navigate("/");
+}, 1000);
+      // Chỉ cho MANAGER
+      if (role?.toUpperCase() !== "MANAGER") {
+
+        dispatch(logout());
+
+        localStorage.removeItem("user");
+
+        toast.error(
+          "Tài khoản này chỉ được sử dụng trên Mobile App"
+        );
+
+        return;
+      }
 
       toast.success("Đăng nhập thành công");
 
-      // delay chuyển trang để toast hiển thị
       setTimeout(() => {
         navigate("/");
-      }, 1500);
+      }, 1000);
 
     } catch (err) {
+
       const message =
-        err?.message || "Username hoặc mật khẩu không chính xác";
+        err?.message ||
+        err?.error ||
+        "Username hoặc mật khẩu không chính xác";
 
       toast.error(message);
     }

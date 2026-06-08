@@ -21,41 +21,41 @@ ChartJS.register(
 
 const ConsultantChart = ({ data = [] }) => {
   const chartData = {
-  labels: data.map(
-    (item) => item.consultantName
-  ),
+    labels: data.map(
+      (item) => item.consultantName
+    ),
 
-  datasets: [
-    {
-      label: "Đã thu",
+    datasets: [
+      {
+        label: "Đã thu",
 
-      data: data.map(
-        (item) => item.collectedRecords
-      ),
+        data: data.map(
+          (item) => item.collectedRecords
+        ),
 
-      backgroundColor: "#D70018",
+        backgroundColor: "#D70018",
 
-      borderRadius: 6,
-    },
+        borderRadius: 6,
+      },
 
-    {
-      label: "Chưa thu",
+      {
+        label: "Chưa thu",
 
-      data: data.map(
-        (item) =>
-          Math.max(
-            item.targetRecords -
+        data: data.map(
+          (item) =>
+            Math.max(
+              item.targetRecords -
               item.collectedRecords,
-            0
-          )
-      ),
+              0
+            )
+        ),
 
-      backgroundColor: "#FFD6D9",
+        backgroundColor: "#FFD6D9",
 
-      borderRadius: 6,
-    },
-  ],
-};
+        borderRadius: 6,
+      },
+    ],
+  };
 
   const options = {
     responsive: true,
@@ -63,110 +63,110 @@ const ConsultantChart = ({ data = [] }) => {
     maintainAspectRatio: false,
 
     plugins: {
-legend: {
-  display: true,
+      legend: {
+        display: true,
 
-  position: "top",
+        position: "top",
 
-  align: "end",
+        align: "end",
 
-  labels: {
-    usePointStyle: true,
+        labels: {
+          usePointStyle: true,
 
-    pointStyle: "rectRounded",
+          pointStyle: "rectRounded",
 
-    padding: 20,
+          padding: 20,
 
-    font: {
-      size: 13,
-      weight: "500",
-    },
-  },
-},
+          font: {
+            size: 13,
+            weight: "500",
+          },
+        },
+      },
 
-tooltip: {
-  callbacks: {
-    title: function (tooltipItems) {
-      return data[
-        tooltipItems[0].dataIndex
-      ].consultantName;
-    },
+      tooltip: {
+        callbacks: {
+          title: function (tooltipItems) {
+            return data[
+              tooltipItems[0].dataIndex
+            ].consultantName;
+          },
 
-label: () => null,
+          label: () => null,
 
-    afterBody: function (
-      tooltipItems
-    ) {
-      const consultant =
-        data[
-          tooltipItems[0].dataIndex
-        ];
+          afterBody: function (
+            tooltipItems
+          ) {
+            const consultant =
+              data[
+              tooltipItems[0].dataIndex
+              ];
 
-      const remainingRecords =
-        consultant.targetRecords -
-        consultant.collectedRecords;
+            const remainingRecords =
+              consultant.targetRecords -
+              consultant.collectedRecords;
 
-      const remainingAmount =
-        consultant.targetAmount -
-        consultant.collectedAmount;
+            const remainingAmount =
+              consultant.targetAmount -
+              consultant.collectedAmount;
 
-      const percent =
-        consultant.targetRecords > 0
-          ? (
-              (consultant.collectedRecords /
-                consultant.targetRecords) *
-              100
-            ).toFixed(1)
-          : 0;
+            const percent =
+              consultant.targetRecords > 0
+                ? (
+                  (consultant.collectedRecords /
+                    consultant.targetRecords) *
+                  100
+                ).toFixed(1)
+                : 0;
 
-      return [
-        `Đã thu hồ sơ: ${consultant.collectedRecords}`,
-        `Chưa thu hồ sơ: ${remainingRecords}`,
-        `Chỉ tiêu hồ sơ: ${consultant.targetRecords}`,
+            return [
+              `Đã thu hồ sơ: ${consultant.collectedRecords}`,
+              `Chưa thu hồ sơ: ${remainingRecords}`,
+              `Chỉ tiêu hồ sơ: ${consultant.targetRecords}`,
 
-        "",
+              "",
 
-        `Đã thu tiền: ${new Intl.NumberFormat(
-          "vi-VN"
-        ).format(
-          consultant.collectedAmount
-        )} đ`,
+              `Đã thu tiền: ${new Intl.NumberFormat(
+                "vi-VN"
+              ).format(
+                consultant.collectedAmount
+              )} đ`,
 
-        `Còn lại tiền: ${new Intl.NumberFormat(
-          "vi-VN"
-        ).format(
-          remainingAmount
-        )} đ`,
+              `Còn lại tiền: ${new Intl.NumberFormat(
+                "vi-VN"
+              ).format(
+                remainingAmount
+              )} đ`,
 
-        `Chỉ tiêu tiền: ${new Intl.NumberFormat(
-          "vi-VN"
-        ).format(
-          consultant.targetAmount
-        )} đ`,
+              `Chỉ tiêu tiền: ${new Intl.NumberFormat(
+                "vi-VN"
+              ).format(
+                consultant.targetAmount
+              )} đ`,
 
-        "",
+              "",
 
-        `Hoàn thành: ${percent}%`,
-      ];
-    },
-  },
-},
-    },
-
-scales: {
-  y: {
-    beginAtZero: true,
-
-    title: {
-      display: true,
-      text: "Số hồ sơ",
+              `Hoàn thành: ${percent}%`,
+            ];
+          },
+        },
+      },
     },
 
-    ticks: {
-      precision: 0,
+    scales: {
+      y: {
+        beginAtZero: true,
+
+        title: {
+          display: true,
+          text: "Số hồ sơ",
+        },
+
+        ticks: {
+          precision: 0,
+        },
+      },
     },
-  },
-},
   };
 
   return (

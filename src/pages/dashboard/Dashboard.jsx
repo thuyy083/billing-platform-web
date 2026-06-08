@@ -16,8 +16,8 @@ import DailyStatsTable from "./DailyStatsTable";
 import WarningTable from "./WarningTable";
 
 import styles from "./Dashboard.module.scss";
-import ProgressChart from "./ProgressChart";
 import ConsultantRanking from "./ConsultantRanking";
+import ProgressSection from "./ProgressSection";
 
 const Dashboard = () => {
 
@@ -120,35 +120,29 @@ const Dashboard = () => {
       <KPISection overview={overview} />
 
 
-<div className={styles.topSection}>
-  <div className={styles.left}>
-    <ConsultantChart
-      data={consultants}
-    />
-  </div>
-
-  <div className={styles.right}>
-    <ProgressChart
-      percent={
-        overview.progressPercentage || 0
-      }
-    />
-  </div>
-</div>
-
-<div className={styles.bottomSection}>
-  <ConsultantRanking
-    consultants={consultants}
-  />
-
-  <DailyStatsTable
-    data={dailyStats}
-  />
-</div>
-
-<WarningTable
-  warnings={warnings}
+<ConsultantChart
+  data={consultants}
 />
+
+<div className={styles.progressSection}>
+  <ProgressSection
+    overview={overview}
+  />
+</div>
+
+      <div className={styles.bottomSection}>
+        <ConsultantRanking
+          consultants={consultants}
+        />
+
+        <DailyStatsTable
+          data={dailyStats}
+        />
+      </div>
+
+      <WarningTable
+        warnings={warnings}
+      />
     </div>
   );
 };
