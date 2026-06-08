@@ -54,9 +54,14 @@ function Sidebar({ isOpen, isMobile, onClose }) {
             Danh sách tiến độ thu cước
           </NavLink>
 
+          <NavLink to="/consultant-progress" onClick={onClose} className={({ isActive }) => isActive ? styles.active : ""}>
+            Báo cáo tiến độ thu cước
+          </NavLink>
+
           <NavLink to="/store-config" onClick={onClose} className={({ isActive }) => isActive ? styles.active : ""}>
             Cài đặt tên shop
           </NavLink>
+
         </nav>
       </div>
     </>

@@ -13,6 +13,15 @@ const dashboardService = {
     );
   },
 
+   exportConsultants(month, year) {
+    return axiosClient.get(
+      `/dashboard/consultants/export?month=${month}&year=${year}`,
+      {
+        responseType: "blob",
+      }
+    );
+  },
+
   getDailyStats(date) {
     return axiosClient.get(
       `/dashboard/daily-stats?date=${date}`
