@@ -38,11 +38,6 @@ function Login() {
     }
 
     try {
-
-      // Bước 1: Login trước
-      await dispatch(login(form)).unwrap();
-
-      // Bước 2: Lấy thông tin user
 await dispatch(login(form)).unwrap();
 
 const user =
@@ -55,41 +50,42 @@ const role = (
   ""
 ).toUpperCase();
 
-// CONSULTANT
+// CONSULTANT bị chặn
 if (role === "CONSULTANT") {
 
   dispatch(logout());
 
   localStorage.removeItem("user");
 
-  toast.warning(
-    "Tài khoản CONSULTANT chỉ được phép đăng nhập trên ứng dụng Mobile."
+  toast.error(
+    "Tài khoản Tư vấn viên chỉ được phép đăng nhập trên ứng dụng Mobile."
   );
 
   return;
 }
 
-// Không phải MANAGER
-if (role !== "MANAGER") {
+// Chỉ ADMIN và MANAGER được vào web
+if (
+  role !== "ADMIN" &&
+  role !== "MANAGER"
+) {
 
   dispatch(logout());
 
   localStorage.removeItem("user");
 
   toast.error(
-    "Bạn không có quyền truy cập hệ thống web."
+    "Bạn không có quyền truy cập hệ thống."
   );
 
   return;
 }
 
-toast.success("Đăng nhập thành công");
-
 setTimeout(() => {
   navigate("/");
 }, 1000);
       // Chỉ cho MANAGER
-      if (role?.toUpperCase() !== "MANAGER") {
+      if (role?.toUpperCase() == "CONSULTANT") {
 
         dispatch(logout());
 

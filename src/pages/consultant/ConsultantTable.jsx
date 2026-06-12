@@ -10,6 +10,22 @@ const ConsultantTable = ({
   onPageChange
 }) => {
 
+  const getRoleName = (role) => {
+    switch (role) {
+      case "MANAGER":
+        return "Quản lý";
+
+      case "CONSULTANT":
+        return "Tư vấn viên";
+      
+      case "ADMIN":
+        return "Quản trị viên";
+
+      default:
+        return role;
+    }
+  };
+
   return (
     <div className={styles.tableWrapper}>
       <table>
@@ -21,7 +37,7 @@ const ConsultantTable = ({
             <th>Họ tên</th>
             <th>Số điện thoại</th>
             <th>Vai trò</th>
-            <th>Trạng thái</th>
+            <th>Khu vực</th>
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -40,20 +56,9 @@ const ConsultantTable = ({
 
               <td>{item.phone}</td>
 
-              <td>{item.role}</td>
+              <td>{getRoleName(item.role)}</td>
 
-              <td>
-                <span
-                  className={
-                    item.status === "ACTIVE"
-                      ? styles.active
-                      : styles.inactive
-                  }
-                >
-                  {item.status}
-                </span>
-              </td>
-
+              <td>{item.regionName}</td>
               <td>
                 <button
                   className={styles.editBtn}

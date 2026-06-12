@@ -235,7 +235,22 @@ const UploadBox = () => {
     };
 
   return (
+    <>
+ {loading && (
+      <div className={styles.loadingOverlay}>
+        <div className={styles.loadingContainer}>
+<div className={styles.spinnerWrapper}>
+  <i className="fas fa-file-import"></i>
+</div>
+          <h3>Đang import dữ liệu</h3>
 
+          <p>
+            Vui lòng không đóng trình duyệt hoặc
+            chuyển trang trong quá trình import...
+          </p>
+        </div>
+      </div>
+    )}
     <div className={styles.card}>
 
       <div
@@ -322,30 +337,17 @@ const UploadBox = () => {
       >
 
         <button
-
-          disabled={loading}
-
-          onClick={
-            handleImport
-          }
-
-          className={
-            styles.importBtn
-          }
-
-        >
-
-          {
-            loading
-              ? "Đang import..."
-              : "Import dữ liệu"
-          }
-
-        </button>
+  disabled={loading}
+  onClick={handleImport}
+  className={styles.importBtn}
+>
+  Import dữ liệu
+</button>
 
       </div>
 
     </div>
+    </>
 
   );
 

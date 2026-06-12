@@ -126,3 +126,91 @@
 .importButton:active {
   transform: scale(0.98);
 }
+
+.loadingOverlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(255,255,255,0.85);
+
+  backdrop-filter: blur(3px);
+
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingContent {
+  width: 320px;
+
+  background: white;
+
+  border-radius: 20px;
+
+  padding: 30px;
+
+  text-align: center;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.15);
+
+  h3 {
+    margin-top: 20px;
+
+    color: #e60012;
+
+    font-size: 20px;
+
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 8px;
+
+    color: #666;
+  }
+}
+
+.spinner {
+
+  width: 70px;
+  height: 70px;
+
+  margin: 0 auto;
+
+  border: 6px solid #f4d6d9;
+
+  border-top-color: #e60012;
+
+  border-radius: 50%;
+
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: .7;
+}
+
+.fileName {
+  margin-top: 10px;
+
+  color: #e60012;
+
+  font-weight: 600;
+}

@@ -103,7 +103,8 @@ const UploadBox = () => {
   return (
     <div className={styles.card}>
       <div
-        className={styles.uploadBox}
+        className={`${styles.uploadBox}
+    ${loading ? styles.disabled : ""}`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
@@ -158,6 +159,25 @@ const UploadBox = () => {
                 ? "Đang import..."
                 : "Import Dữ Liệu"}
             </button>
+          </div>
+        </div>
+      )}
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingContent}>
+            <div className={styles.spinner}></div>
+
+            <h3>
+              Đang import dữ liệu...
+            </h3>
+
+            <p className={styles.fileName}>
+              {selectedFile?.name}
+            </p>
+
+            <p>
+              Vui lòng không đóng trình duyệt
+            </p>
           </div>
         </div>
       )}

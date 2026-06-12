@@ -58,7 +58,8 @@ const ProtectedRoute = ({ children }) => {
   return <Navigate to="/login" replace />;
 }
 
-  if (role !== "MANAGER") {
+  if (role !== "ADMIN" &&
+  role !== "MANAGER") {
 
     localStorage.removeItem("token");
     localStorage.removeItem("user");

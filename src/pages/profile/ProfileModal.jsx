@@ -36,8 +36,6 @@ function ProfileModal({ user, close }) {
   const [form, setForm] = useState({
     fullName: user?.fullName || "",
     phone: user?.phone || "",
-    gender: user?.gender || "",
-    dateOfBirth: formatDateForInput(user?.dateOfBirth),
   });
 
   const [errors, setErrors] = useState({});
@@ -155,49 +153,17 @@ return (
           </div>
 
           {/* SĐT + Giới tính */}
-          <div className="form-row">
 
             <div className="form-group">
               <label>Số điện thoại</label>
 
               <input
-                className="input-profile"
                 value={form.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
               />
             </div>
 
-            <div className="form-group">
-              <label>Giới tính</label>
 
-              <select
-                // className="input-profile"
-                value={form.gender || ""}
-                onChange={(e) => handleChange("gender", e.target.value)}
-              >
-                <option value="">Chưa cập nhật</option>
-                <option value="Nam">Nam</option>
-                <option value="Nữ">Nữ</option>
-              </select>
-            </div>
-
-          </div>
-
-          {/* Ngày sinh */}
-          <div className="form-group">
-            <label>Ngày sinh</label>
-
-            <input
-              // className="input-profile"
-              type="date"
-              value={form.dateOfBirth}
-              onChange={(e) => handleChange("dateOfBirth", e.target.value)}
-            />
-
-            {errors.dateOfBirth && (
-              <span className="error-text">{errors.dateOfBirth}</span>
-            )}
-          </div>
 
         </div>
 

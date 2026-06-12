@@ -1,4 +1,9 @@
 import {
+  useEffect,
+  useState
+} from "react";
+
+import {
   useDispatch,
   useSelector
 } from "react-redux";
@@ -24,6 +29,9 @@ const CollectionFilter = () => {
       selectFilters
     );
 
+  const [searchText, setSearchText] =
+    useState(filters.search);
+
   const handleSearch = () => {
 
     dispatch(setPage(0));
@@ -36,20 +44,58 @@ const CollectionFilter = () => {
   const currentYear =
     new Date().getFullYear();
 
-  const handleReset = () => {
+const handleReset = () => {
 
-    dispatch(
-      resetFilter()
-    );
+  setSearchText("");
 
+  dispatch(
+    resetFilter()
+  );
+};
+
+useEffect(() => {
+
+  const timer =
     setTimeout(() => {
 
       dispatch(
-        fetchCollectionProgress()
+        updateFilter({
+          search: searchText
+        })
       );
 
-    }, 100);
-  };
+    }, 500);
+
+  return () =>
+    clearTimeout(timer);
+
+}, [searchText, dispatch]);
+
+useEffect(() => {
+
+  dispatch(setPage(0));
+
+  dispatch(
+    fetchCollectionProgress()
+  );
+
+}, [
+
+  filters.month,
+
+  filters.year,
+
+  filters.assignedUserId,
+
+  filters.collectionStatus,
+
+  filters.debtStatus,
+
+  filters.search,
+
+  dispatch
+
+]);
 
   return (
 
@@ -209,6 +255,18 @@ const CollectionFilter = () => {
       <div className={styles.searchRow}>
 
         <input
+          placeholder="
+  Tìm mã KH, tên KH, số TB, SĐT, địa chỉ...
+  "
+          value={searchText}
+          onChange={(e) =>
+            setSearchText(
+              e.target.value
+            )
+          }
+        />
+
+        {/* <input
           placeholder="Tìm mã KH, tên KH, số TB, SĐT, địa chỉ..."
           value={filters.search}
           onChange={(e) =>
@@ -218,14 +276,7 @@ const CollectionFilter = () => {
               })
             )
           }
-        />
-
-        <button
-          className={styles.searchBtn}
-          onClick={handleSearch}
-        >
-          Tìm kiếm
-        </button>
+        /> */}
 
         <button
           className={styles.resetBtn}

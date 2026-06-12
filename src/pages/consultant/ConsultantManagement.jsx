@@ -25,44 +25,36 @@ const ConsultantManagement = () => {
   const [keyword, setKeyword] = useState("");
   const [role, setRole] = useState("");
 
+  const [searchText, setSearchText] =
+  useState("");
+
   useEffect(() => {
-    dispatch(
-      fetchConsultants({
-        page,
-        size: 5,
-        keyword,
-        role
-      })
-    );
-  }, [dispatch, page]);
 
-  const handleSearch = () => {
+  const timer =
+    setTimeout(() => {
 
-    setPage(0);
+      setKeyword(
+        searchText
+      );
 
-    dispatch(
-      fetchConsultants({
-        page: 0,
-        size: 5,
-        keyword,
-        role
-      })
-    );
-  };
+    }, 500);
 
-  const handleReset = () => {
+  return () =>
+    clearTimeout(timer);
 
-    setKeyword("");
-    setRole("");
-    setPage(0);
+}, [searchText]);
 
-    dispatch(
-      fetchConsultants({
-        page: 0,
-        size: 5
-      })
-    );
-  };
+
+const handleReset = () => {
+
+  setSearchText("");
+
+  setKeyword("");
+
+  setRole("");
+
+  setPage(0);
+};
 
   const {
     totalPages
@@ -79,6 +71,24 @@ const ConsultantManagement = () => {
     setSelectedRow(row);
     setOpenModal(true);
   };
+
+  useEffect(() => {
+
+  dispatch(
+    fetchConsultants({
+      page,
+      size: 5,
+      keyword,
+      role
+    })
+  );
+
+}, [
+  dispatch,
+  page,
+  keyword,
+  role
+]);
 
   return (
     <div className={styles.container}>
@@ -100,21 +110,33 @@ const ConsultantManagement = () => {
 
       <div className={styles.searchSection}>
 
-        <input
-          type="text"
-          placeholder="Tìm theo tên, username hoặc số điện thoại..."
-          value={keyword}
-          onChange={(e) =>
-            setKeyword(e.target.value)
-          }
-        />
+<input
+  type="text"
+  placeholder="Tìm theo tên, username hoặc số điện thoại..."
+  value={searchText}
+  onChange={(e) => {
 
-        <select
-          value={role}
-          onChange={(e) =>
-            setRole(e.target.value)
-          }
-        >
+    setPage(0);
+
+    setSearchText(
+      e.target.value
+    );
+
+  }}
+/>
+
+<select
+  value={role}
+  onChange={(e) => {
+
+    setPage(0);
+
+    setRole(
+      e.target.value
+    );
+
+  }}
+>
           <option value="">
             Tất cả vai trò
           </option>
@@ -127,13 +149,6 @@ const ConsultantManagement = () => {
             Tư vấn viên
           </option>
         </select>
-
-        <button
-          className={styles.searchBtn}
-          onClick={handleSearch}
-        >
-          Tìm kiếm
-        </button>
 
         <button
           className={styles.resetBtn}

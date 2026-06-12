@@ -52,26 +52,10 @@ function Profile() {
                 <div className="profile-body">
 
                     <div className="info-item">
-                        <label>Email</label>
-                        <span>{user?.email}</span>
-                    </div>
-
-                    <div className="info-item">
                         <label>Số điện thoại</label>
                         <span>{user?.phone || "Chưa cập nhật"}</span>
                     </div>
 
-                    <div className="info-item">
-                        <label>Ngày sinh</label>
-                        <span>
-                            {formatDate(user?.dateOfBirth) || "Chưa cập nhật"}
-                        </span>
-                    </div>
-
-                    <div className="info-item">
-                        <label>Giới tính</label>
-                        <span>{user?.gender || "Chưa cập nhật"}</span>
-                    </div>
 
                     <div className="info-item">
                         <label>Trạng thái</label>

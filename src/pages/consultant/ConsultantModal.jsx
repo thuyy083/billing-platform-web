@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import styles from "./ConsultantModal.module.scss";
 import consultantService from "../../services/consultantService";
 import { toast } from "react-toastify";
+import regionService from "../../services/regionService";
 
 const ConsultantModal = ({
   open,
@@ -16,10 +18,18 @@ const ConsultantModal = ({
     fullName: "",
     phone: "",
     password: "",
-    role: "CONSULTANT"
+    role: "CONSULTANT",
+    regionId: ""
   };
 
   const [form, setForm] = useState(initialForm);
+  const [regions, setRegions] = useState([]);
+
+  const currentUser =
+    useSelector(state => state.auth.user);
+
+  const currentRole =
+    currentUser?.role;
 
   useEffect(() => {
 
@@ -32,7 +42,8 @@ const ConsultantModal = ({
         fullName: consultant.fullName || "",
         phone: consultant.phone || "",
         password: "",
-        role: consultant.role || "CONSULTANT"
+        role: consultant.role || "CONSULTANT",
+        regionId: consultant.regionId || ""
       });
 
     } else {
@@ -43,33 +54,105 @@ const ConsultantModal = ({
 
   }, [consultant, open]);
 
-  if (!open) return null;
+  useEffect(() => {
+
+    if (
+      open &&
+      currentRole === "ADMIN"
+    ) {
+
+      loadRegions();
+
+    }
+
+  }, [open, currentRole]);
+
+  const loadRegions = async () => {
+
+    try {
+
+      const res =
+        await regionService.getAll();
+
+      setRegions(
+        res.data.data || []
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+useEffect(() => {
+
+  if (!open) return;
+
+  if (
+    currentRole === "MANAGER" &&
+    !consultant
+  ) {
+    setForm(prev => ({
+      ...prev,
+      role: "CONSULTANT"
+    }));
+  }
+
+}, [currentRole, consultant, open]);
+
+if (!open) return null;
+
 
   const handleSubmit = async () => {
     try {
+      if (
+        currentRole === "ADMIN" &&
+        !form.regionId
+      ) {
+        toast.error("Vui lòng chọn khu vực");
+        return;
+      }
 
       if (consultant) {
 
+        const updatePayload = {
+          fullName: form.fullName,
+          phone: form.phone,
+role:
+    currentRole === "MANAGER"
+      ? "CONSULTANT"
+      : form.role        };
+
+        if (currentRole === "ADMIN") {
+          updatePayload.regionId = Number(form.regionId);
+        }
+
         await consultantService.update(
           consultant.id,
-          {
-            fullName: form.fullName,
-            phone: form.phone,
-            role: form.role
-          }
+          updatePayload
         );
 
         toast.success("Cập nhật người dùng thành công");
 
       } else {
 
-        await consultantService.create({
+        const createPayload = {
           username: form.username,
           fullName: form.fullName,
           phone: form.phone,
           password: form.password,
-          role: form.role
-        });
+role:
+    currentRole === "MANAGER"
+      ? "CONSULTANT"
+      : form.role        };
+
+        if (currentRole === "ADMIN") {
+          createPayload.regionId = Number(form.regionId);
+        }
+
+        await consultantService.create(createPayload);
 
         toast.success("Thêm người dùng thành công");
       }
@@ -168,27 +251,75 @@ const ConsultantModal = ({
           }
         />
 
-        <div className={styles.formGroup}>
-          <label>Vai trò</label>
+{
+  currentRole === "ADMIN" && (
 
-          <select
-            value={form.role}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                role: e.target.value
-              })
-            }
-          >
-            <option value="CONSULTANT">
-              Tư vấn viên
-            </option>
+    <div className={styles.formGroup}>
 
-            <option value="MANAGER">
-              Người quản lý
-            </option>
-          </select>
-        </div>
+      <label>Vai trò</label>
+
+      <select
+        value={form.role}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            role: e.target.value
+          })
+        }
+      >
+        <option value="MANAGER">
+          Quản lý khu vực
+        </option>
+
+        <option value="CONSULTANT">
+          Tư vấn viên
+        </option>
+
+      </select>
+
+    </div>
+
+  )
+}
+
+        {
+          currentRole === "ADMIN" && (
+
+            <div className={styles.formGroup}>
+
+              <label>Khu vực</label>
+
+              <select
+                value={form.regionId}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    regionId: e.target.value
+                  })
+                }
+              >
+
+                <option value="">
+                  Chọn khu vực
+                </option>
+
+                {
+                  regions.map(region => (
+                    <option
+                      key={region.id}
+                      value={region.id}
+                    >
+                      {region.name}
+                    </option>
+                  ))
+                }
+
+              </select>
+
+            </div>
+
+          )
+        }
 
         <div className={styles.actions}>
           <button
