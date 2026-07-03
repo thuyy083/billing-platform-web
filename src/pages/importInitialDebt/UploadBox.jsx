@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 const UploadBox = () => {
 
   const [selectedFile, setSelectedFile] = useState(null);
+  const [importResult, setImportResult] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -41,6 +42,8 @@ const UploadBox = () => {
     }
 
     setSelectedFile(file);
+
+    setImportResult(null);
   };
 
   const handleInputChange = (e) => {
@@ -72,17 +75,48 @@ const UploadBox = () => {
     try {
 
       dispatch(setLoading(true));
+const response =
+await importInitialDebtService
+.importInitialDebt(
+    selectedFile
+);
 
-      const result =
-        await importInitialDebtService.importInitialDebt(
-          selectedFile
+const result =
+response.data;
+setImportResult(result);
+
+const {
+  totalRows,
+  successCount,
+  failedCount,
+  errors = []
+} = result;
+
+      if (failedCount === 0) {
+
+        toast.success(
+          `Import thành công ${successCount}/${totalRows} bản ghi.`
         );
 
-      toast.success(
-        "Import dữ liệu đầu kỳ thành công"
-      );
+      } else if (successCount === 0) {
 
-      console.log(result);
+        toast.error(
+          `Import thất bại (${failedCount}/${totalRows} bản ghi lỗi).\n\n${errors[0]?.reason || ""}`,
+          {
+            autoClose: 8000
+          }
+        );
+
+      } else {
+
+        toast.warning(
+          `Import hoàn tất.\nThành công: ${successCount}\nLỗi: ${failedCount}\n\n${errors[0]?.reason || ""}`,
+          {
+            autoClose: 8000
+          }
+        );
+
+      }
 
     } catch (error) {
 
@@ -161,6 +195,90 @@ const UploadBox = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {importResult && (
+
+        <div className={styles.resultCard}>
+
+          <h3>Kết quả import</h3>
+
+          <div className={styles.summary}>
+
+            <div>
+              <span>Tổng dòng</span>
+              <strong>{importResult.totalRows}</strong>
+            </div>
+
+            <div>
+              <span>Thành công</span>
+              <strong className={styles.success}>
+                {importResult.successCount}
+              </strong>
+            </div>
+
+            <div>
+              <span>Lỗi</span>
+              <strong className={styles.error}>
+                {importResult.failedCount}
+              </strong>
+            </div>
+
+            <div>
+              <span>Cảnh báo</span>
+              <strong className={styles.warning}>
+                {importResult.warningCount}
+              </strong>
+            </div>
+
+          </div>
+
+          {importResult.errors?.length > 0 && (
+
+            <>
+
+              <h4>Chi tiết lỗi</h4>
+
+              <div className={styles.errorWrapper}>
+
+                <table className={styles.errorTable}>
+
+                  <thead>
+
+                    <tr>
+                      <th>Dòng</th>
+                      <th>Nội dung lỗi</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    {importResult.errors
+                      ?.slice(0, 300)
+                      .map((item, index) => (
+                        <tr key={index}>
+
+                          <td>{item.rowNumber}</td>
+
+                          <td>{item.reason}</td>
+
+                        </tr>
+
+                      ))}
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </>
+
+          )}
+
+        </div>
+
       )}
       {loading && (
         <div className={styles.loadingOverlay}>

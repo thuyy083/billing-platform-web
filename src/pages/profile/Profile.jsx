@@ -50,6 +50,10 @@ function Profile() {
                 </div>
 
                 <div className="profile-body">
+                    <div className="info-item">
+                        <label>Khu vực quản lý</label>
+                        <span>{user?.regionName || "Chưa cập nhật"}</span>
+                    </div>
 
                     <div className="info-item">
                         <label>Số điện thoại</label>

@@ -35,13 +35,27 @@ const ProtectedRoute = ({ children }) => {
   const token =
     localStorage.getItem("token");
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+if (!token) {
+  return <Navigate to="/login" replace />;
+}
+
+const userStr = localStorage.getItem("user");
+
+if (!userStr) {
+  return <Navigate to="/login" replace />;
+}
+
+let user = null;
+
+try {
+  user = JSON.parse(userStr);
+} catch {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  return <Navigate to="/login" replace />;
+}
 
   const role =
     getNormalizedRole(user);

@@ -26,6 +26,8 @@ const UploadBox = () => {
     setLoading] =
     useState(false);
 
+  const [importResult, setImportResult] = useState(null);
+
   const [dragging, setDragging] =
     useState(false);
 
@@ -166,18 +168,34 @@ const UploadBox = () => {
 
         setLoading(true);
 
-        await paidCustomerImportService
-          .importReconciliation(
+        const result =
+          await paidCustomerImportService
+            .importReconciliation(
+              selectedMonth,
+              selectedYear,
+              selectedFile
+            );
 
-            selectedMonth,
-            selectedYear,
-            selectedFile
+        const importData = result.data.data;
 
-          );
+        setImportResult(importData);
 
-        toast.success(
-          "Import thành công"
-        );
+       if (importData.failedCount === 0) {
+
+  toast.success(
+    `Import thành công ${importData.successCount}/${importData.totalRows} dòng.`
+  );
+
+} else {
+
+  toast.warning(
+    `Import hoàn tất: ${importData.successCount}/${importData.totalRows} dòng thành công, ${importData.failedCount} dòng lỗi. Xem chi tiết bên dưới.`,
+    {
+      autoClose: 6000
+    }
+  );
+
+}
 
         setSelectedFile(null);
 
@@ -236,117 +254,210 @@ const UploadBox = () => {
 
   return (
     <>
- {loading && (
-      <div className={styles.loadingOverlay}>
-        <div className={styles.loadingContainer}>
-<div className={styles.spinnerWrapper}>
-  <i className="fas fa-file-import"></i>
-</div>
-          <h3>Đang import dữ liệu</h3>
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingContainer}>
+            <div className={styles.spinnerWrapper}>
+              <i className="fas fa-file-import"></i>
+            </div>
+            <h3>Đang import dữ liệu</h3>
 
-          <p>
-            Vui lòng không đóng trình duyệt hoặc
-            chuyển trang trong quá trình import...
-          </p>
+            <p>
+              Vui lòng không đóng trình duyệt hoặc
+              chuyển trang trong quá trình import...
+            </p>
+          </div>
         </div>
-      </div>
-    )}
-    <div className={styles.card}>
+      )}
+      <div className={styles.card}>
 
-      <div
-        className={styles.download}
-      >
-
-        <button
-          onClick={
-            handleDownload
-          }
+        <div
+          className={styles.download}
         >
-          Download File Mẫu
-        </button>
 
-      </div>
+          <button
+            onClick={
+              handleDownload
+            }
+          >
+            Download File Mẫu
+          </button>
 
-      <div
-        className={`${styles.uploadBox}
+        </div>
+
+        <div
+          className={`${styles.uploadBox}
   ${dragging ? styles.dragging : ""}`}
 
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
 
-        <div>
-          📁
+          <div>
+            📁
+          </div>
+
+          <h2>
+            Kéo thả file Excel
+            vào đây
+          </h2>
+
+          <p>
+            Chỉ hỗ trợ
+            .xlsx, .xls
+          </p>
+
+          <label
+            className={
+              styles.chooseBtn
+            }
+          >
+
+            Chọn File
+
+            <input
+              hidden
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={e =>
+                handleFile(
+                  e.target.files[0]
+                )
+              }
+            />
+
+          </label>
+
+          {
+            selectedFile && (
+
+              <div
+                className={
+                  styles.fileInfo
+                }
+              >
+
+                {selectedFile.name}
+
+              </div>
+
+            )
+          }
+
         </div>
 
-        <h2>
-          Kéo thả file Excel
-          vào đây
-        </h2>
-
-        <p>
-          Chỉ hỗ trợ
-          .xlsx, .xls
-        </p>
-
-        <label
+        <div
           className={
-            styles.chooseBtn
+            styles.footer
           }
         >
 
-          Chọn File
+          <button
+            disabled={loading}
+            onClick={handleImport}
+            className={styles.importBtn}
+          >
+            Import dữ liệu
+          </button>
 
-          <input
-            hidden
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={e =>
-              handleFile(
-                e.target.files[0]
-              )
-            }
-          />
+        </div>
 
-        </label>
+      </div>
 
-        {
-          selectedFile && (
+      {
+        importResult && (
 
-            <div
-              className={
-                styles.fileInfo
-              }
-            >
+          <div className={styles.resultCard}>
 
-              {selectedFile.name}
+            <h3>Kết quả import</h3>
+
+            <div className={styles.summary}>
+
+              <div>
+                Tổng dòng
+                <strong>
+                  {importResult.totalRows}
+                </strong>
+              </div>
+
+              <div>
+                Thành công
+                <strong>
+                  {importResult.successCount}
+                </strong>
+              </div>
+
+              <div>
+                Lỗi
+                <strong>
+                  {importResult.failedCount}
+                </strong>
+              </div>
+
+              <div>
+                Cảnh báo
+                <strong>
+                  {importResult.warningCount}
+                </strong>
+              </div>
 
             </div>
 
-          )
-        }
+            {
+              importResult.errors?.length > 0 && (
 
-      </div>
+                <>
 
-      <div
-        className={
-          styles.footer
-        }
-      >
+                  <h4>Chi tiết lỗi</h4>
 
-        <button
-  disabled={loading}
-  onClick={handleImport}
-  className={styles.importBtn}
->
-  Import dữ liệu
-</button>
+                  <table className={styles.errorTable}>
 
-      </div>
+                    <thead>
 
-    </div>
+                      <tr>
+                        <th>Dòng</th>
+                        <th>Nội dung lỗi</th>
+                      </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                      {
+                        importResult.errors.map(
+                          (item, index) => (
+
+                            <tr key={index}>
+
+                              <td>
+                                {item.rowNumber}
+                              </td>
+
+                              <td>
+                                {item.reason}
+                              </td>
+
+                            </tr>
+
+                          )
+                        )
+                      }
+
+                    </tbody>
+
+                  </table>
+
+                </>
+
+              )
+            }
+
+          </div>
+
+        )
+      }
     </>
 
   );
