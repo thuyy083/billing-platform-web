@@ -115,20 +115,17 @@ const Dashboard = () => {
         </div>
       </div>
 
-
-
       <KPISection overview={overview} />
 
+      <ConsultantChart
+        data={consultants}
+      />
 
-<ConsultantChart
-  data={consultants}
-/>
-
-<div className={styles.progressSection}>
-  <ProgressSection
-    overview={overview}
-  />
-</div>
+      <div className={styles.progressSection}>
+        <ProgressSection
+          overview={overview}
+        />
+      </div>
 
       <div className={styles.bottomSection}>
         <ConsultantRanking

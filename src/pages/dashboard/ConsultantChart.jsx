@@ -27,7 +27,7 @@ const ConsultantChart = ({ data = [] }) => {
 
     datasets: [
       {
-        label: "Đã thu",
+        label: "Đã in bill",
 
         data: data.map(
           (item) => item.collectedRecords
@@ -39,7 +39,7 @@ const ConsultantChart = ({ data = [] }) => {
       },
 
       {
-        label: "Chưa thu",
+        label: "Chưa in bill",
 
         data: data.map(
           (item) =>

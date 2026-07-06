@@ -13,7 +13,7 @@ const KPISection = ({ overview }) => {
   </div>
 
   <div className={styles.card}>
-    <h4>Đã thu</h4>
+    <h4>Đã in bill</h4>
     <span>
       {overview.totalCollectedRecords || 0}
     </span>
@@ -27,7 +27,7 @@ const KPISection = ({ overview }) => {
   </div>
 
   <div className={styles.card}>
-    <h4>Đã thu tiền</h4>
+    <h4>Đã thanh toán</h4>
     <span>
       {numeral(
         overview.totalCollectedAmount || 0

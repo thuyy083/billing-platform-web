@@ -309,26 +309,27 @@ const UploadBox = () => {
             .xlsx, .xls
           </p>
 
-          <label
-            className={
-              styles.chooseBtn
-            }
-          >
+{!selectedFile ? (
+  <label className={styles.chooseBtn}>
+    Chọn File
 
-            Chọn File
-
-            <input
-              hidden
-              type="file"
-              accept=".xlsx,.xls"
-              onChange={e =>
-                handleFile(
-                  e.target.files[0]
-                )
-              }
-            />
-
-          </label>
+    <input
+      hidden
+      type="file"
+      accept=".xlsx,.xls"
+      onChange={(e) => handleFile(e.target.files[0])}
+    />
+  </label>
+) : (
+  <button
+    type="button"
+    className={styles.chooseBtn}
+    disabled={loading}
+    onClick={handleImport}
+  >
+    {loading ? "Đang import..." : "Import dữ liệu"}
+  </button>
+)}
 
           {
             selectedFile && (
@@ -348,21 +349,6 @@ const UploadBox = () => {
 
         </div>
 
-        <div
-          className={
-            styles.footer
-          }
-        >
-
-          <button
-            disabled={loading}
-            onClick={handleImport}
-            className={styles.importBtn}
-          >
-            Import dữ liệu
-          </button>
-
-        </div>
 
       </div>
 

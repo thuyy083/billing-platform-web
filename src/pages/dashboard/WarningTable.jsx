@@ -5,10 +5,13 @@ const formatMoney = (value) =>
     value
   );
 
-const formatDate = (value) =>
-  new Date(value).toLocaleString(
+const formatDate = (value) => {
+  if (!value) return "Chưa phát sinh";
+
+  return new Date(value).toLocaleString(
     "vi-VN"
   );
+};
 
 const WarningTable = ({ warnings }) => {
 

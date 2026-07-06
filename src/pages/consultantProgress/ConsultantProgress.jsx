@@ -80,7 +80,7 @@ const years = [
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h2>Tiến độ thu cước nhân viên</h2>
+        <h1>Tiến độ thu cước nhân viên</h1>
 
         <div className={styles.actions}>
           <select
@@ -123,7 +123,7 @@ const years = [
               <th>Đã thu KH</th>
               <th>% KH</th>
               <th>Chỉ tiêu tiền</th>
-              <th>Đã thu tiền</th>
+              <th>Đã thanh toán</th>
               <th>% Tiền</th>
             </tr>
           </thead>

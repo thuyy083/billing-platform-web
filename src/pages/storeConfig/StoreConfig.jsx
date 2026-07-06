@@ -99,7 +99,7 @@ const StoreConfig = () => {
       <div className={styles.card}>
 
         <div className={styles.header}>
-          <h2>Cấu hình in hóa đơn</h2>
+          <h1>Cấu hình in hóa đơn</h1>
           <p>
             Thiết lập thông tin hiển thị trên bill bán hàng
           </p>

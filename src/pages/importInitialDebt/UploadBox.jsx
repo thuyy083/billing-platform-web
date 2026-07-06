@@ -75,22 +75,22 @@ const UploadBox = () => {
     try {
 
       dispatch(setLoading(true));
-const response =
-await importInitialDebtService
-.importInitialDebt(
-    selectedFile
-);
+      const response =
+        await importInitialDebtService
+          .importInitialDebt(
+            selectedFile
+          );
 
-const result =
-response.data;
-setImportResult(result);
+      const result =
+        response.data;
+      setImportResult(result);
 
-const {
-  totalRows,
-  successCount,
-  failedCount,
-  errors = []
-} = result;
+      const {
+        totalRows,
+        successCount,
+        failedCount,
+        errors = []
+      } = result;
 
       if (failedCount === 0) {
 
@@ -117,6 +117,8 @@ const {
         );
 
       }
+
+      setSelectedFile(null);
 
     } catch (error) {
 
@@ -154,7 +156,7 @@ const {
           Chỉ hỗ trợ .xlsx, .xls
         </p>
 
-        {!selectedFile && (
+        {!selectedFile ? (
           <label className={styles.uploadBtn}>
             Chọn File
 
@@ -165,37 +167,27 @@ const {
               onChange={handleInputChange}
             />
           </label>
-        )}
-
-        {selectedFile && (
-          <div className={styles.fileInfo}>
-            <span>
-              {selectedFile.name}
-            </span>
-
-            <span>
-              {(selectedFile.size / 1024).toFixed(2)}
-              {" "}KB
-            </span>
-          </div>
-        )}
-      </div>
-
-      {selectedFile && (
-        <div className={styles.footer}>
-          <div className={styles.actions}>
+        ) : (
+          <>
             <button
+              type="button"
+              className={styles.uploadBtn}
               disabled={loading}
-              className={styles.importBtn}
               onClick={handleImport}
             >
-              {loading
-                ? "Đang import..."
-                : "Import Dữ Liệu"}
+              {loading ? "Đang import..." : "Import dữ liệu"}
             </button>
-          </div>
-        </div>
-      )}
+
+            <div className={styles.fileInfo}>
+              <span>{selectedFile.name}</span>
+
+              <span>
+                {(selectedFile.size / 1024).toFixed(2)} KB
+              </span>
+            </div>
+          </>
+        )}
+      </div>
 
       {importResult && (
 

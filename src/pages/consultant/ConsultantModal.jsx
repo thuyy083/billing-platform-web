@@ -196,11 +196,11 @@ role:
 
       <div className={styles.modal}>
 
-        <h2>
+        <h1>
           {consultant
             ? "Cập nhật thông tin người dùng"
             : "Thêm người dùng"}
-        </h2>
+        </h1>
 
         {!consultant && (
           <>
