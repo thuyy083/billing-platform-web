@@ -13,6 +13,7 @@ import ConsultantManagement from "../pages/consultant/ConsultantManagement";
 import StoreConfig from "../pages/storeConfig/StoreConfig";
 import ProtectedRoute from "./ProtectedRoute";
 import ConsultantProgress from "../pages/consultantProgress/ConsultantProgress";
+import PrivacyPolicy from "../pages/privacyPolicy";
 
 const getNormalizedRole = (user) => {
 
@@ -117,6 +118,14 @@ function AppRoutes() {
            />
         </Route>
 
+           <Route
+           path="/policy"
+           element={
+            <PrivacyPolicy />
+           }
+           >
+
+           </Route>
 
       </Routes>
     </BrowserRouter>
