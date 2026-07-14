@@ -1,0 +1,32 @@
+.support-page {
+  background: #f5f6fa;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.support-container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.support-container h1 {
+  margin-bottom: 24px;
+}
+
+.support-container h2 {
+  margin-top: 30px;
+  margin-bottom: 12px;
+}
+
+.support-container p,
+.support-container li {
+  line-height: 1.8;
+}
+
+.support-container ul {
+  padding-left: 20px;
+}

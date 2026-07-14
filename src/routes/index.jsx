@@ -14,6 +14,7 @@ import StoreConfig from "../pages/storeConfig/StoreConfig";
 import ProtectedRoute from "./ProtectedRoute";
 import ConsultantProgress from "../pages/consultantProgress/ConsultantProgress";
 import PrivacyPolicy from "../pages/privacyPolicy";
+import Support from "../pages/support/Support";
 
 const getNormalizedRole = (user) => {
 
@@ -65,7 +66,7 @@ function AppRoutes() {
         <Route
           element={
             <ProtectedRoute>
-            <MainLayout />
+              <MainLayout />
             </ProtectedRoute>
           }
         >
@@ -82,50 +83,54 @@ function AppRoutes() {
               <ImportInitialDebt />
             }
           />
-           <Route
+          <Route
             path="/initialDebt"
             element={
               <InitialDebtList />
             }
           />
           <Route
-           path="/paid-customer-import"
-           element={
-            <PaidCustomerImport />
-           }
+            path="/paid-customer-import"
+            element={
+              <PaidCustomerImport />
+            }
           />
           <Route
-           path="/collectionProgress"
-           element={
-            <CollectionProgress />
-           }
+            path="/collectionProgress"
+            element={
+              <CollectionProgress />
+            }
           />
           <Route
-          path="/consultants"
-          element={<ConsultantManagement />}
+            path="/consultants"
+            element={<ConsultantManagement />}
           />
           <Route
-          path="store-config"
-          element={
-            <StoreConfig />
-          }
+            path="store-config"
+            element={
+              <StoreConfig />
+            }
           />
           <Route
-           path="/consultant-progress"
-           element={
-            <ConsultantProgress />
-           }
-           />
+            path="/consultant-progress"
+            element={
+              <ConsultantProgress />
+            }
+          />
         </Route>
 
-           <Route
-           path="/policy"
-           element={
+        <Route
+          path="/policy"
+          element={
             <PrivacyPolicy />
-           }
-           >
-
-           </Route>
+          }
+        />
+          <Route
+          path="/support"
+          element={
+            <Support />
+          }
+        />
 
       </Routes>
     </BrowserRouter>
